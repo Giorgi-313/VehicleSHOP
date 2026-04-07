@@ -2,10 +2,9 @@ package com.example.vehicleshop
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
-import android.widget.RadioGroup
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import java.util.Locale
 
 class OrderActivity : AppCompatActivity() {
 
@@ -13,15 +12,16 @@ class OrderActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_order)
 
-        // ── Step 1: Retrieve data passed from MainActivity ────────────────────
-        val vehicleName  = intent.getStringExtra("VEHICLE_NAME") ?: "Unknown"
-        val originalPrice = intent.getDoubleExtra("VEHICLE_PRICE", 0.0)
 
-        // ── Step 2: Calculate the 5% discount ────────────────────────────────
-        val discountAmount  = originalPrice * 0.05          // 5% of original
+        val vehicleName   = intent.getStringExtra("VEHICLE_NAME") ?: "Unknown Vehicle"
+        val originalPrice = intent.getDoubleExtra("VEHICLE_PRICE", 0.0)
+        val vehicleImage  = intent.getIntExtra("VEHICLE_IMAGE", -1)
+
+        val discountAmount     = originalPrice * 0.05
         val priceAfterDiscount = originalPrice - discountAmount
 
-        // ── Step 3: Find all views by their IDs ──────────────────────────────
+
+        val ivVehicleImage  = findViewById<ImageView>(R.id.ivVehicleImage)
         val tvVehicleName   = findViewById<TextView>(R.id.tvVehicleName)
         val tvOriginalPrice = findViewById<TextView>(R.id.tvOriginalPrice)
         val tvDiscount      = findViewById<TextView>(R.id.tvDiscount)
@@ -30,37 +30,30 @@ class OrderActivity : AppCompatActivity() {
         val radioGroup      = findViewById<RadioGroup>(R.id.radioGroupShipping)
         val btnPay          = findViewById<Button>(R.id.btnPay)
 
-        // ── Step 4: Display vehicle info on screen ───────────────────────────
-        tvVehicleName.text   = vehicleName
-        tvOriginalPrice.text = "$%.2f".format(originalPrice)
-        tvDiscount.text      = "-$%.2f".format(discountAmount)
+        tvVehicleName.text = vehicleName
+        if (vehicleImage != -1) {
+            ivVehicleImage.setImageResource(vehicleImage)
+        }
 
-        // ── Step 5: Calculate total based on selected shipping ────────────────
+
+        tvOriginalPrice.text = String.format(Locale.US, "$%.2f", originalPrice)
+        tvDiscount.text      = String.format(Locale.US, "-$%.2f", discountAmount)
+
+
         fun updateTotal() {
-            val shippingFee = when (radioGroup.checkedRadioButtonId) {
-                R.id.radioExpress -> 1700.0   // Express: add $1,700
-                else              -> 0.0      // Standard: free
-            }
-
+            val shippingFee = if (radioGroup.checkedRadioButtonId == R.id.radioExpress) 1700.0 else 0.0
             val total = priceAfterDiscount + shippingFee
 
-            // Update the shipping and total labels
-            tvShippingFee.text = if (shippingFee > 0) "+$%.2f".format(shippingFee) else "Free"
-            tvTotal.text       = "$%.2f".format(total)
+            tvShippingFee.text = if (shippingFee > 0) String.format(Locale.US, "+$%.2f", shippingFee) else "Free"
+            tvTotal.text       = String.format(Locale.US, "$%.2f", total)
         }
 
-        // Run once on load to show initial totals
+
         updateTotal()
+        radioGroup.setOnCheckedChangeListener { _, _ -> updateTotal() }
 
-        // ── Step 6: Recalculate whenever the user changes shipping option ─────
-        radioGroup.setOnCheckedChangeListener { _, _ ->
-            updateTotal()
-        }
-
-        // ── Step 7: "Pay" button navigates to ConfirmationActivity ───────────
         btnPay.setOnClickListener {
-            val intent = Intent(this, ConfirmationActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, ConfirmationActivity::class.java))
         }
     }
 }

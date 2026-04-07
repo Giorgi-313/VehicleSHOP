@@ -2,6 +2,7 @@ package com.example.vehicleshop
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
@@ -10,27 +11,24 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // ── Vehicle data: name and price (Double for precision) ──────────────
+
         val vehicles = mapOf(
-            R.id.itemSedan    to Pair("BMW M3(F80)",       40000.0),
-            R.id.itemSuv      to Pair("Range Rover(SPORT)",         60000.0),
-            R.id.itemTruck    to Pair("Tesla Model S",        25000.0),
-            R.id.itemElectric to Pair("Porsche 911(991)", 125000.0)
+            R.id.itemSedan    to Triple("BMW M3(F80)",        40000.0,  R.drawable.car_bmw),
+            R.id.itemSuv      to Triple("Range Rover(SPORT)", 60000.0,  R.drawable.car_rangerover),
+            R.id.itemTruck    to Triple("Tesla Model S",      25000.0,  R.drawable.car_tesla),
+            R.id.itemElectric to Triple("Porsche 911(991)",   125000.0, R.drawable.car_porsche)
         )
 
-        // ── Attach an OnClickListener to each vehicle row ─────────────────────
+
         for ((viewId, vehicleInfo) in vehicles) {
-            val (name, price) = vehicleInfo
+            val (name, price, imageRes) = vehicleInfo
 
-            findViewById<android.view.View>(viewId).setOnClickListener {
-                // Create an Intent to open OrderActivity
+
+            findViewById<View>(viewId)?.setOnClickListener {
                 val intent = Intent(this, OrderActivity::class.java)
-
-                // Pass vehicle name and price to the next screen
-                intent.putExtra("VEHICLE_NAME", name)
+                intent.putExtra("VEHICLE_NAME",  name)
                 intent.putExtra("VEHICLE_PRICE", price)
-
-                // Navigate to OrderActivity
+                intent.putExtra("VEHICLE_IMAGE", imageRes)
                 startActivity(intent)
             }
         }

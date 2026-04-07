@@ -1,14 +1,21 @@
 package com.example.vehicleshop
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 
-// Page 3: Final confirmation screen — no calculations needed here
 class ConfirmationActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_confirmation)
-        // The layout displays the success message — nothing else to do here!
+
+
+        findViewById<Button>(R.id.btnHome).setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            startActivity(intent)
+        }
     }
 }

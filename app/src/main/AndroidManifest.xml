@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.vehicleshop">
 
     <application
         android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.VehicleSHOP">
+        android:theme="@style/Theme.VehicleSHOP"
+        tools:targetApi="31">
 
-        <!-- Page 1: Vehicle selection (starts first) -->
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -19,11 +23,13 @@
             </intent-filter>
         </activity>
 
-        <!-- Page 2: Order & calculation -->
-        <activity android:name=".OrderActivity" />
+        <activity
+            android:name=".OrderActivity"
+            android:exported="false" />
 
-        <!-- Page 3: Payment confirmation -->
-        <activity android:name=".ConfirmationActivity" />
+        <activity
+            android:name=".ConfirmationActivity"
+            android:exported="false" />
 
     </application>
 
